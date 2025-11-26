@@ -207,36 +207,58 @@
     .link-primary:hover{text-decoration:underline;}
 
     /* Timeline */
-    .timeline{
-      border-left:2px solid #e0e0e0;
-      margin-left:8px;
-      padding-left:24px;
-    }
-    .timeline-item{
-      margin-bottom:12px;
-      position:relative;
-    }
-    .timeline-item::before{
-      content:"";
-      position:absolute;
-      left:-11px;
-      top:3px;
-      width:14px;
-      height:14px;
-      border-radius:50%;
-      border:3px solid #3f7bff;
-      background:#fff;
-    }
-    .timeline-item.past::before{border-color:#cfcfcf;}
-    .timeline-time{
-      font-size:12px;
-      color:#777;
-      margin-bottom:2px;
-    }
-    .timeline-text{
-      font-size:13px;
-      color:#555;
-    }
+.timeline {
+  position: relative;
+  padding-left: 35px;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 25px;
+}
+
+/* Garis utama */
+.timeline-line {
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #cfcfcf;
+}
+
+/* Titik */
+.timeline-dot {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #3f7bff;
+  z-index: 2;
+}
+
+/* Dot aktif (warna lebih tebal) */
+.timeline-item.active .timeline-dot {
+  border-color: #3f7bff;
+}
+
+/* Konten */
+.timeline-content {
+  padding-left: 30px;
+  font-size: 14px;
+}
+
+/* ❌ Hapus garis di item terakhir */
+.timeline-item:last-child .timeline-line {
+  display: none;
+}
+
+
+
+
 
     /* Map */
     .map-placeholder{
@@ -349,6 +371,94 @@
       background:#f3f3f3;
       color:#333;
     }
+	
+	/* ANDROID MATERIAL POPUP */
+.screen {
+    position: relative; /* WAJIB */
+    width: 360px;      /* contoh ukuran HP */
+    height: 740px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    overflow: hidden; /* cegah keluar */
+}
+
+.popup {
+    position: absolute; /* penting agar terkunci di .screen */
+    top: 0;
+    left: 0;
+    width: 100%;       /* mengikuti lebar layar HP */
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.popup-box {
+    width: 85%;           /* popup tidak mungkin melebar */
+    max-width: 300px;     /* pembatas */
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.ok-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #2196F3;
+    border: none;
+    color: white;
+    font-size: 14px;
+    border-radius: 8px;
+}
+/* USER ICON */
+.user-icon {
+  position: absolute;
+  top: 60px;
+  right: 18px;
+  font-size: 22px;
+  color: #444;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* POPUP MENU */
+.user-popup {
+  position: absolute;
+  top: 80px;
+  right: 16px;
+  width: 150px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 6px 0;
+  display: none;
+  z-index: 2000;
+}
+
+.user-popup-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.user-popup-item:hover {
+  background: #f5f5f5;
+}
+
+/* item non-clickable */
+.disabled-item {
+  pointer-events: none;
+  cursor: default;
+  opacity: 1;
+}
+
   </style>
 </head>
 <!-- Status bar (reusable) -->
@@ -366,6 +476,15 @@
         <i class="bi bi-battery-full"></i>
       </span>
     </div>
+	
+<div class="user-icon" onclick="toggleUserPopup()">
+    <i class="bi bi-person-circle"></i>
+</div>
+ <div id="userPopup" class="user-popup shadow-sm">
+   <div class="user-popup-item disabled-item">driver@primus.co.id</div>
+    
+  <a href="index.html" class="text-decoration-none text-dark"><div class="user-popup-item text-danger"> Logout</div></a>
+  </div>
 
     <main class="flex-grow-1 d-flex flex-column">
       <h1 class="page-title">Track My Orders</h1>
@@ -375,8 +494,8 @@
           <img src="https://picsum.photos/200?1"
                class="product-thumb me-3" alt="">
           <div class="flex-grow-1">
-            <div class="product-title">Lorem ipsum</div>
-            <div class="product-subtitle">Lorem</div>
+            <div class="product-title">Stuff A1</div>
+            <div class="product-subtitle">Lorem ipsum dolor sit amet</div>
             <div class="price">502.000</div>
           </div>
         </div>
@@ -481,3 +600,18 @@ var titikB = L.marker([-0.9625454864207291, 116.71244630128098], { icon: greenIc
   </div>
 </div>
 </body>
+
+
+<script>
+function toggleUserPopup() {
+    const p = document.getElementById("userPopup");
+    p.style.display = (p.style.display === "block") ? "none" : "block";
+}
+
+// Klik di luar popup → close
+document.addEventListener("click", function(e) {
+  if (!e.target.closest(".user-icon") && !e.target.closest("#userPopup")) {
+    document.getElementById("userPopup").style.display = "none";
+  }
+});
+</script>
