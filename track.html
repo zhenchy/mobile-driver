@@ -24,7 +24,7 @@
     .screen{
       background:#fff;
       border-radius:32px;
-      min-height:720px;
+      min-height:820px;
       padding:16px 24px 24px;
       display:flex;
       flex-direction:column;
@@ -551,6 +551,17 @@
         </div>
     </div>
 
+    <!-- POPUP GET CODE -->
+    <div id="popupGetCode" class="popup">
+        <div class="popup-box">
+            <h4 class="title">Get SmartBox Code</h4>
+            <p class="msg" style="margin-bottom:12px;">Enter verification to unlock code</p>
+            <input type="text" id="verifyInput" class="form-control" placeholder="Enter verification..." style="margin-bottom:12px;border-radius:8px;border:1px solid #ddd;padding:10px;">
+            <button class="ok-btn" onclick="getCode()" style="background:linear-gradient(90deg,#5b6efe,#3fb4ff);">Get Code</button>
+            <button class="ok-btn" onclick="closeGetCodePopup()" style="background:#ccc;color:#333;margin-top:8px;">Cancel</button>
+        </div>
+    </div>
+
     <!-- Status bar -->
     <div class="status-bar d-flex justify-content-between align-items-center">
       <span>9:31</span>
@@ -632,14 +643,14 @@
       </div>
 
       <!-- Code card -->
-    <div class="smartbox-card ">
+    <div class="smartbox-card" onclick="openGetCodePopup()" style="cursor:pointer;">
 
  
 
   <div class="d-flex justify-content-between align-items-start">
     <div>
       <div class="smartbox-title">SmartBox Code</div>
-      <div class="smartbox-sub">Box No 341</div>
+      <div class="smartbox-sub">Box No <span id="boxNumber">•••</span></div>
     </div>
 
     <div class="form-check form-switch m-0">
@@ -648,8 +659,8 @@
     </div>
   </div>
 
-  <div class="smartbox-code text-center">
-    3973
+  <div class="smartbox-code text-center" id="smartboxCode">
+    ••••
   </div>
 
 </div>
@@ -693,5 +704,36 @@ function openPopup() {
 
 function closePopup() {
   document.getElementById("popup").style.display = "none";
+}
+
+// Get Code Popup Functions
+var codeRevealed = false;
+
+function openGetCodePopup() {
+  if (codeRevealed) return; // Jika sudah pernah get code, tidak bisa diklik lagi
+  document.getElementById("popupGetCode").style.display = "flex";
+}
+
+function closeGetCodePopup() {
+  document.getElementById("popupGetCode").style.display = "none";
+  document.getElementById("verifyInput").value = "";
+}
+
+function getCode() {
+  // Generate random box number (100-999) dan code (1000-9999)
+  var randomBoxNo = Math.floor(Math.random() * 900) + 100;  // 3 digit: 100-999
+  var randomCode = Math.floor(Math.random() * 9000) + 1000; // 4 digit: 1000-9999
+  
+  // Show the box number and code
+  document.getElementById("boxNumber").textContent = randomBoxNo;
+  document.getElementById("smartboxCode").textContent = randomCode;
+  codeRevealed = true;
+  
+  // Disable card click dan ubah cursor
+  var card = document.querySelector(".smartbox-card");
+  card.style.cursor = "default";
+  card.onclick = null;
+  
+  closeGetCodePopup();
 }
 </script>
